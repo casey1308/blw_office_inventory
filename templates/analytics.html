@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Inventory Analytics</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: #1e1e2f;
+        color: #ffffff;
+        font-family: "Segoe UI", sans-serif;
+        padding: 40px;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        background: #2c2c3c;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      }
+      .form-select,
+      .form-control {
+        margin-bottom: 20px;
+        background-color: #f0f0f0;
+        color: #000;
+      }
+      .btn-primary {
+        background-color: #ff9800;
+        border: none;
+      }
+      .result {
+        background-color: #3c3c4c;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+      }
+      h2,
+      h4 {
+        color: #ffa500;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="text-center mb-4">Drilldown Inventory Analytics</h2>
+
+      <div class="form-group">
+        <label for="office">Select Office</label>
+        <select id="office" class="form-select">
+          <option selected disabled>Choose Office</option>
+          {% for office in offices %}
+          <option value="{{ office }}">{{ office }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="department">Select Department</label>
+        <select id="department" class="form-select" disabled>
+          <option selected disabled>Choose Department</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="item">Select Item</label>
+        <select id="item" class="form-select" disabled>
+          <option selected disabled>Choose Item</option>
+        </select>
+      </div>
+
+      <div id="result" class="result text-center"></div>
+    </div>
+
+    <script>
+      const departmentSelect = document.getElementById("department");
+      const itemSelect = document.getElementById("item");
+      const resultDiv = document.getElementById("result");
+
+      document.getElementById("office").addEventListener("change", function () {
+        const office = this.value;
+        fetch(`/get_departments/${office}`)
+          .then((res) => res.json())
+          .then((data) => {
+            departmentSelect.innerHTML = `<option disabled selected>Select Department</option>`;
+            data.forEach((dep) => {
+              departmentSelect.innerHTML += `<option value="${dep}">${dep}</option>`;
+            });
+            departmentSelect.disabled = false;
+            itemSelect.disabled = true;
+            resultDiv.innerHTML = "";
+          });
+      });
+
+      departmentSelect.addEventListener("change", function () {
+        const office = document.getElementById("office").value;
+        const department = this.value;
+        fetch(`/get_items/${office}/${department}`)
+          .then((res) => res.json())
+          .then((data) => {
+            itemSelect.innerHTML = `<option disabled selected>Select Item</option>`;
+            data.forEach((item) => {
+              itemSelect.innerHTML += `<option value="${item[0]}">${item[0]}</option>`;
+            });
+            itemSelect.disabled = false;
+            resultDiv.innerHTML = "";
+          });
+      });
+
+      itemSelect.addEventListener("change", function () {
+        const selectedItem = this.value;
+        const office = document.getElementById("office").value;
+        const department = document.getElementById("department").value;
+        fetch(`/get_items/${office}/${department}`)
+          .then((res) => res.json())
+          .then((data) => {
+            const found = data.find((item) => item[0] === selectedItem);
+            const quantity = found ? found[1] : 0;
+            resultDiv.innerHTML = `<h4>${selectedItem}</h4><p>Quantity in ${department}, ${office}: <strong>${quantity}</strong></p>`;
+          });
+      });
+    </script>
+  </body>
+</html>

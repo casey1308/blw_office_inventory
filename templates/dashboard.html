@@ -2,18 +2,113 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Dashboard - Office Inventory</title>
-    <link rel="stylesheet" href="/static/styles.css" />
+    <title>Dashboard</title>
+    <style>
+      body {
+        background: #e3f2fd;
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 30px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+      h2 {
+        text-align: center;
+        color: #0d47a1;
+        margin-bottom: 30px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+      }
+      th {
+        background: #1976d2;
+        color: #fff;
+      }
+      tr:nth-child(even) {
+        background: #f1f1f1;
+      }
+      .btn {
+        background-color: #0d47a1;
+        color: white;
+        padding: 10px 16px;
+        border: none;
+        margin: 10px 5px 20px 0;
+        display: inline-block;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .btn.danger {
+        background: #c62828;
+      }
+      .btn.warning {
+        background: #ffa000;
+        color: #000;
+      }
+      .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logout {
+        float: right;
+        background: #37474f;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
-      <h2>Welcome to the Office Inventory Dashboard</h2>
+      <h2>Inventory Dashboard</h2>
 
-      <div class="dashboard-links">
-        <a href="/add" class="dashboard-btn">➕ Add Furniture</a>
-        <a href="/delete" class="dashboard-btn">🗑️ Delete Furniture</a>
-        <a href="/logout" class="dashboard-btn">🚪 Logout</a>
+      <div class="actions">
+        <div>
+          <a class="btn" href="/add">Add Inventory</a>
+          {% if session['user_type'] == 'manager' %}
+          <a class="btn warning" href="{{ url_for('analytics') }}"
+            >View Analytics</a
+          >
+          {% endif %}
+        </div>
+        <a class="btn logout" href="/logout">Logout</a>
       </div>
+
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Item</th>
+          <th>Department</th>
+          <th>Office</th>
+          <th>Quantity</th>
+          <th>Action</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+          <td>{{ row[0] }}</td>
+          <td>{{ row[1] }}</td>
+          <td>{{ row[2] }}</td>
+          <td>{{ row[3] }}</td>
+          <td>{{ row[4] }}</td>
+          <td>
+            <a href="/delete/{{ row[0] }}" class="btn danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      <p><strong>Total Quantity:</strong> {{ total_quantity }}</p>
     </div>
   </body>
 </html>

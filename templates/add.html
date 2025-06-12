@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Inventory</title>
+    <style>
+      body {
+        background-color: #e3f2fd;
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .form-container {
+        background-color: #ffffff;
+        max-width: 500px;
+        margin: 80px auto;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      }
+      h2 {
+        text-align: center;
+        color: #0d47a1;
+        margin-bottom: 30px;
+      }
+      label {
+        font-weight: bold;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 5px;
+      }
+      select,
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 2px solid #64b5f6;
+        border-radius: 6px;
+        font-size: 16px;
+      }
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #1976d2;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0d47a1;
+      }
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #0d47a1;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Add Inventory</h2>
+      <form method="post">
+        <label for="item">Item:</label>
+        <select name="item" id="item" required>
+          {% for item in items %}
+          <option value="{{ item }}">{{ item }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="department">Department:</label>
+        <select name="department" id="department" required>
+          {% for department in departments %}
+          <option value="{{ department }}">{{ department }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="office">Office:</label>
+        <select name="office" id="office" required>
+          {% for office in offices %}
+          <option value="{{ office }}">{{ office }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" id="quantity" min="1" required />
+
+        <button type="submit">Add Item</button>
+      </form>
+      <a class="back-link" href="/">← Back to Dashboard</a>
+    </div>
+  </body>
+</html>
